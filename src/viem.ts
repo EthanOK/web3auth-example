@@ -1,41 +1,45 @@
-import { createWalletClient, createPublicClient, custom, formatEther, parseEther, stringToHex } from 'viem'
-import { mainnet, polygonAmoy, bscTestnet } from 'viem/chains'
+import {
+  createWalletClient,
+  createPublicClient,
+  custom,
+  formatEther,
+  parseEther,
+} from "viem";
+import { mainnet, polygonAmoy, bscTestnet } from "viem/chains";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IProvider } from "@web3auth/base";
-import { log } from 'console';
-
 
 export default class EthereumRpc {
   private provider: IProvider;
 
   private contractABI = [
     {
-      "inputs": [],
-      "name": "retrieve",
-      "outputs": [
+      inputs: [],
+      name: "retrieve",
+      outputs: [
         {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
       ],
-      "stateMutability": "view",
-      "type": "function"
+      stateMutability: "view",
+      type: "function",
     },
     {
-      "inputs": [
+      inputs: [
         {
-          "internalType": "uint256",
-          "name": "num",
-          "type": "uint256"
-        }
+          internalType: "uint256",
+          name: "num",
+          type: "uint256",
+        },
       ],
-      "name": "store",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }
+      name: "store",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
   ];
 
   constructor(provider: IProvider) {
@@ -58,11 +62,11 @@ export default class EthereumRpc {
   async getChainId(): Promise<any> {
     try {
       const walletClient = createWalletClient({
-        transport: custom(this.provider)
-      })
+        transport: custom(this.provider),
+      });
 
-      const address = await walletClient.getAddresses()
-      const chainId = await walletClient.getChainId()
+      const address = await walletClient.getAddresses();
+      const chainId = await walletClient.getChainId();
       return chainId.toString();
     } catch (error) {
       return error;
@@ -73,7 +77,7 @@ export default class EthereumRpc {
     try {
       const walletClient = createWalletClient({
         chain: mainnet,
-        transport: custom(this.provider)
+        transport: custom(this.provider),
       });
 
       return await walletClient.getAddresses();
@@ -83,7 +87,6 @@ export default class EthereumRpc {
   }
   async getAccounts(): Promise<any> {
     try {
-
       const address = this.getAddresses();
 
       return address;
@@ -107,25 +110,24 @@ export default class EthereumRpc {
   async getBalance(): Promise<string> {
     const publicClient = createPublicClient({
       chain: mainnet,
-      transport: custom(this.provider)
-    })
+      transport: custom(this.provider),
+    });
 
     const address = await this.getAccounts();
     const balance = await publicClient.getBalance({ address: address[0] });
-    console.log(balance)
+    console.log(balance);
     return formatEther(balance);
   }
 
   async sendTransaction(): Promise<any> {
-
     const publicClient = createPublicClient({
       chain: this.getViewChain(),
-      transport: custom(this.provider)
-    })
+      transport: custom(this.provider),
+    });
 
     const walletClient = createWalletClient({
       chain: this.getViewChain(),
-      transport: custom(this.provider)
+      transport: custom(this.provider),
     });
 
     // data for the transaction
@@ -137,12 +139,12 @@ export default class EthereumRpc {
     const hash = await walletClient.sendTransaction({
       account: address[0],
       to: destination,
-      value: amount
+      value: amount,
     });
 
-    console.log(hash)
+    console.log(hash);
     const receipt = await publicClient.waitForTransactionReceipt({ hash });
-    console.log(receipt.toString(), receipt, "1")
+    console.log(receipt.toString(), receipt, "1");
 
     return this.toObject(receipt);
   }
@@ -150,12 +152,12 @@ export default class EthereumRpc {
   async signMessage() {
     const publicClient = createPublicClient({
       chain: this.getViewChain(),
-      transport: custom(this.provider)
-    })
+      transport: custom(this.provider),
+    });
 
     const walletClient = createWalletClient({
       chain: this.getViewChain(),
-      transport: custom(this.provider)
+      transport: custom(this.provider),
     });
 
     // data for signing
@@ -167,10 +169,10 @@ export default class EthereumRpc {
     // Sign the message
     const hash = await walletClient.signMessage({
       account: address[0],
-      message: originalMessage
+      message: originalMessage,
     });
 
-    console.log(hash)
+    console.log(hash);
 
     return hash.toString();
   }
@@ -178,14 +180,14 @@ export default class EthereumRpc {
   async readContract() {
     const publicClient = createPublicClient({
       chain: this.getViewChain(),
-      transport: custom(this.provider)
-    })
+      transport: custom(this.provider),
+    });
 
     const number = await publicClient.readContract({
       address: "0x9554a5CC8F600F265A89511e5802945f2e8A5F5D",
       abi: this.contractABI,
-      functionName: 'retrieve'
-    })
+      functionName: "retrieve",
+    });
 
     return this.toObject(number);
   }
@@ -193,12 +195,12 @@ export default class EthereumRpc {
   async writeContract() {
     const publicClient = createPublicClient({
       chain: this.getViewChain(),
-      transport: custom(this.provider)
-    })
+      transport: custom(this.provider),
+    });
 
     const walletClient = createWalletClient({
       chain: this.getViewChain(),
-      transport: custom(this.provider)
+      transport: custom(this.provider),
     });
 
     // data for writing to the contract
@@ -206,29 +208,27 @@ export default class EthereumRpc {
     const randomNumber = Math.floor(Math.random() * 9000) + 1000;
 
     // Submit transaction to the blockchain
-    const hash = await walletClient.writeContract(
-      {
-        account: address[0],
-        address: "0x9554a5CC8F600F265A89511e5802945f2e8A5F5D",
-        abi: this.contractABI,
-        functionName: 'store',
-        args: [randomNumber]
-      }
-    )
+    const hash = await walletClient.writeContract({
+      account: address[0],
+      address: "0x9554a5CC8F600F265A89511e5802945f2e8A5F5D",
+      abi: this.contractABI,
+      functionName: "store",
+      args: [randomNumber],
+    });
 
     const receipt = await publicClient.waitForTransactionReceipt({ hash });
-    console.log(receipt.toString(), receipt, "1")
+    console.log(receipt.toString(), receipt, "1");
 
     return this.toObject(receipt);
   }
 
   toObject(data: any) {
     // can't serialize a BigInt so this hack
-    return JSON.parse(JSON.stringify(data, (key, value) =>
-      typeof value === 'bigint'
-        ? value.toString()
-        : value // return everything else unchanged
-    ));
+    return JSON.parse(
+      JSON.stringify(
+        data,
+        (key, value) => (typeof value === "bigint" ? value.toString() : value) // return everything else unchanged
+      )
+    );
   }
-
 }
