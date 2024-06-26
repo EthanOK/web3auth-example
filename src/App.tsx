@@ -21,7 +21,7 @@ import { getDefaultExternalAdapters } from "@web3auth/default-evm-adapter";
 // import { CoinbaseAdapter, CoinbaseAdapterOptions } from "@web3auth/coinbase-adapter";
 
 const clientId =
-  "BPi5PB_UiIZ-cPz1GtV5i1I2iOSOHuimiXBI0e-Oe_u6X3oVAbCiAZOTEBtTXw4tsluTITPqA8zMsfxIKMjiqNQ"; // get from https://dashboard.web3auth.io
+  "BGaYve_5NaFEkrmlHuvoCcTA9Lj0DJV2JoOOyJyGA2Ch3q6KjPV7olKu1CU03zOmTJ0eLrr0ErEvZbGRlXs6Ju4";
 
 let chainConfig = {
   chainId: "0x13882", // Please use 0x1 for ETH Mainnet, 0x89 for Polygon Mainnet
@@ -51,7 +51,7 @@ const privateKeyProvider = new EthereumPrivateKeyProvider({
 
 const web3AuthOptions: Web3AuthOptions = {
   clientId,
-  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
+  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
   uiConfig: {
     uxMode: "redirect",
     appName: "W3A Heroes",
