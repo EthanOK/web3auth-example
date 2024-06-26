@@ -39,11 +39,11 @@ chainConfig = {
   rpcTarget: "https://rpc.ankr.com/bsc_testnet_chapel",
   // Avoid using public rpcTarget in production.
   // Use services like Infura, Quicknode etc
-  displayName: "TBNB Mainnet",
+  displayName: "BNB Testnet",
   blockExplorerUrl: "https://testnet.bscscan.com",
   ticker: "TBNB",
   tickerName: "TBNB",
-  logo: "https://cryptologos.cc/logos/binance-coin-logo.png",
+  logo: "https://images.toruswallet.io/bnb_logo.svg",
 };
 const privateKeyProvider = new EthereumPrivateKeyProvider({
   config: { chainConfig },
