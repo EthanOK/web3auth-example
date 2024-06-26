@@ -117,6 +117,25 @@ export default class EthereumRpc {
       // Sign the message
       const signedMessage = await signer.signMessage(originalMessage);
 
+      const domain = {
+        name: "EIP712Storage",
+        version: "1",
+        chainId: this.provider.chainId,
+        verifyingContract: "0xf8e81D47203A594245E36C48e151709F0C19fBe8",
+      };
+      const types = {
+        Storage: [
+          { name: "spender", type: "address" },
+          { name: "number", type: "uint256" },
+        ],
+      };
+      const message = {
+        spender: "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4",
+        number: "100",
+      };
+      const signature0 = await signer.signTypedData(domain, types, message);
+      console.log("Signature:", signature0);
+
       return signedMessage;
     } catch (error) {
       return error as string;
@@ -130,10 +149,24 @@ export default class EthereumRpc {
       const signer = await ethersProvider.getSigner();
 
       const contractABI = [
-        { inputs: [{ internalType: "string", name: "initMessage", type: "string" }], stateMutability: "nonpayable", type: "constructor" },
-        { inputs: [], name: "message", outputs: [{ internalType: "string", name: "", type: "string" }], stateMutability: "view", type: "function" },
         {
-          inputs: [{ internalType: "string", name: "newMessage", type: "string" }],
+          inputs: [
+            { internalType: "string", name: "initMessage", type: "string" },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [],
+          name: "message",
+          outputs: [{ internalType: "string", name: "", type: "string" }],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            { internalType: "string", name: "newMessage", type: "string" },
+          ],
           name: "update",
           outputs: [],
           stateMutability: "nonpayable",
@@ -141,7 +174,11 @@ export default class EthereumRpc {
         },
       ];
       const contractAddress = "0x04cA407965D60C2B39d892a1DFB1d1d9C30d0334";
-      const contract = new ethers.Contract(contractAddress, JSON.parse(JSON.stringify(contractABI)), signer);
+      const contract = new ethers.Contract(
+        contractAddress,
+        JSON.parse(JSON.stringify(contractABI)),
+        signer
+      );
 
       // Read message from smart contract
       const message = await contract.message();
@@ -158,10 +195,24 @@ export default class EthereumRpc {
       const signer = await ethersProvider.getSigner();
 
       const contractABI = [
-        { inputs: [{ internalType: "string", name: "initMessage", type: "string" }], stateMutability: "nonpayable", type: "constructor" },
-        { inputs: [], name: "message", outputs: [{ internalType: "string", name: "", type: "string" }], stateMutability: "view", type: "function" },
         {
-          inputs: [{ internalType: "string", name: "newMessage", type: "string" }],
+          inputs: [
+            { internalType: "string", name: "initMessage", type: "string" },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [],
+          name: "message",
+          outputs: [{ internalType: "string", name: "", type: "string" }],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            { internalType: "string", name: "newMessage", type: "string" },
+          ],
           name: "update",
           outputs: [],
           stateMutability: "nonpayable",
@@ -169,7 +220,11 @@ export default class EthereumRpc {
         },
       ];
       const contractAddress = "0x04cA407965D60C2B39d892a1DFB1d1d9C30d0334";
-      const contract = new ethers.Contract(contractAddress, JSON.parse(JSON.stringify(contractABI)), signer);
+      const contract = new ethers.Contract(
+        contractAddress,
+        JSON.parse(JSON.stringify(contractABI)),
+        signer
+      );
       // Generate random number between 1000 and 9000
       const number = Math.floor(Math.random() * 9000) + 1000;
       // Send transaction to smart contract to update message

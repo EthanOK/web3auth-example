@@ -3,9 +3,9 @@ import { CHAIN_NAMESPACES, IProvider, WEB3AUTH_NETWORK } from "@web3auth/base";
 import { Web3Auth, Web3AuthOptions } from "@web3auth/modal";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import "./App.css";
-import RPC from "./viem"; // for using viem
+// import RPC from "./viem"; // for using viem
 // import RPC from "./web3RPC";
-// import RPC from "./ethersRPC"; // for using ethers.js
+import RPC from "./ethersRPC"; // for using ethers.js
 
 // Providers
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
@@ -20,7 +20,8 @@ import { getDefaultExternalAdapters } from "@web3auth/default-evm-adapter";
 // import { TorusWalletAdapter, TorusWalletOptions } from "@web3auth/torus-evm-adapter";
 // import { CoinbaseAdapter, CoinbaseAdapterOptions } from "@web3auth/coinbase-adapter";
 
-const clientId = "BPi5PB_UiIZ-cPz1GtV5i1I2iOSOHuimiXBI0e-Oe_u6X3oVAbCiAZOTEBtTXw4tsluTITPqA8zMsfxIKMjiqNQ"; // get from https://dashboard.web3auth.io
+const clientId =
+  "BPi5PB_UiIZ-cPz1GtV5i1I2iOSOHuimiXBI0e-Oe_u6X3oVAbCiAZOTEBtTXw4tsluTITPqA8zMsfxIKMjiqNQ"; // get from https://dashboard.web3auth.io
 
 let chainConfig = {
   chainId: "0x13882", // Please use 0x1 for ETH Mainnet, 0x89 for Polygon Mainnet
@@ -43,8 +44,10 @@ chainConfig = {
   ticker: "TBNB",
   tickerName: "TBNB",
   logo: "https://cryptologos.cc/logos/binance-coin-logo.png",
-}
-const privateKeyProvider = new EthereumPrivateKeyProvider({ config: { chainConfig } });
+};
+const privateKeyProvider = new EthereumPrivateKeyProvider({
+  config: { chainConfig },
+});
 
 const web3AuthOptions: Web3AuthOptions = {
   clientId,
@@ -69,7 +72,8 @@ const web3AuthOptions: Web3AuthOptions = {
 
 function App() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
-  const [walletServicesPlugin, setWalletServicesPlugin] = useState<WalletServicesPlugin | null>(null);
+  const [walletServicesPlugin, setWalletServicesPlugin] =
+    useState<WalletServicesPlugin | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -123,7 +127,9 @@ function App() {
         // read more about adapters here: https://web3auth.io/docs/sdk/pnp/web/adapters/
 
         // Only when you want to add External default adapters, which includes WalletConnect, Metamask, Torus EVM Wallet
-        const adapters = await getDefaultExternalAdapters({ options: web3AuthOptions });
+        const adapters = await getDefaultExternalAdapters({
+          options: web3AuthOptions,
+        });
         adapters.forEach((adapter) => {
           web3auth.configureAdapter(adapter);
         });
@@ -291,8 +297,7 @@ function App() {
       blockExplorerUrl: "https://testnet.bscscan.com",
       ticker: "TBNB",
       tickerName: "TBNB",
-
-    }
+    };
 
     await web3auth?.addChain(tbnbChain);
     uiConsole("New Chain Added");
@@ -493,7 +498,11 @@ function App() {
   return (
     <div className="container">
       <h1 className="title">
-        <a target="_blank" href="https://web3auth.io/docs/sdk/pnp/web/modal" rel="noreferrer">
+        <a
+          target="_blank"
+          href="https://web3auth.io/docs/sdk/pnp/web/modal"
+          rel="noreferrer"
+        >
           Web3Auth{" "}
         </a>
         & ReactJS Ethereum Example
