@@ -15,6 +15,11 @@ import { WalletServicesPlugin } from "@web3auth/wallet-services-plugin";
 
 // Adapters
 import { getDefaultExternalAdapters } from "@web3auth/default-evm-adapter";
+
+import { signSetAlias } from "./utils/snapshot-sign";
+import { Web3Provider } from "@ethersproject/providers";
+import { Wallet } from "ethers";
+
 // import { WalletConnectV2Adapter, getWalletConnectV2Settings } from "@web3auth/wallet-connect-v2-adapter";
 // import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 // import { TorusWalletAdapter, TorusWalletOptions } from "@web3auth/torus-evm-adapter";
@@ -223,6 +228,22 @@ function App() {
     uiConsole(user);
   };
 
+  const signSnapShot = async () => {
+    if (!web3auth) {
+      uiConsole("web3auth not initialized yet");
+      return;
+    }
+
+    const web3Provider = new Web3Provider(web3auth.provider as any);
+    const account = await web3Provider.getSigner().getAddress();
+    const randomAddress = Wallet.createRandom().address;
+
+    const result = await signSetAlias(web3Provider, account, randomAddress);
+    
+    uiConsole(result);
+    
+  };
+
   const logout = async () => {
     if (!web3auth) {
       uiConsole("web3auth not initialized yet");
@@ -320,7 +341,7 @@ function App() {
       return;
     }
     const rpc = new RPC(web3auth.provider as IProvider);
-    const address = await rpc.getAccounts();
+    const address = await rpc.getAccount();
     uiConsole(address);
   };
 
@@ -483,9 +504,17 @@ function App() {
           </button>
         </div>
       </div>
+      <div className="flex-container">
+        <div>
+          <button onClick={signSnapShot} className="card">
+            Sign SnapShot
+          </button>
+        </div>
+      </div>
       <div id="console" style={{ whiteSpace: "pre-line" }}>
         <p style={{ whiteSpace: "pre-line" }}></p>
       </div>
+
     </>
   );
 

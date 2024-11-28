@@ -22,7 +22,14 @@ export default class EthereumRpc {
     }
   }
 
-  async getAccounts(): Promise<any> {
+  getProvider() {
+    // For ethers v5
+    // const ethersProvider = new ethers.providers.Web3Provider(this.provider);
+    const ethersProvider = new ethers.BrowserProvider(this.provider);
+    return ethersProvider;
+  }
+
+  async getAccount(): Promise<any> {
     try {
       // For ethers v5
       // const ethersProvider = new ethers.providers.Web3Provider(this.provider);
@@ -33,9 +40,9 @@ export default class EthereumRpc {
       const signer = await ethersProvider.getSigner();
 
       // Get user's Ethereum public address
-      const address = signer.getAddress();
+      const address = await signer.getAddress();
 
-      return await address;
+      return address;
     } catch (error) {
       return error;
     }
